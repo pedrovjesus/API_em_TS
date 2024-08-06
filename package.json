@@ -6,8 +6,9 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "start": "tsx watch ./src/index.ts",
+    "start:watch": "tsx watch ./src/index.ts",
     "postinstall": "tsc",
+    "start": "npm run production",
     "production": "node ./build/index.js",
     "test": "jest"
   },
