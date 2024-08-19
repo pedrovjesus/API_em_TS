@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
-import { CidadesController, PessoasController } from './../controllers';
+import { CidadesController, PessoasController, usuariosController } from './../controllers';
 
 
 
@@ -28,6 +28,10 @@ router.get('/pessoas/:id', PessoasController.getByIdValidation, PessoasControlle
 router.put('/pessoas/:id', PessoasController.updateByIdValidation, PessoasController.updateById);
 router.delete('/pessoas/:id', PessoasController.deleteByIdValidation, PessoasController.deleteById);
 router.post('/pessoas', PessoasController.createValidation, PessoasController.create);
+
+//rota de usuarios
+router.post('/entrar', usuariosController.signInValidation, usuariosController.signIn);
+router.post('/cadastrar', usuariosController.signUpValidation, usuariosController.signUp);
 
 
 export { router };

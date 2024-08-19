@@ -110,6 +110,7 @@ describe("Pessoas - Create", () => {
     expect(res1.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     expect(res1.body).toHaveProperty("errors.body.email");
     expect(res1.body).toHaveProperty("errors.body.cidadeId");
-    expect(res1.body).toHaveProperty("errors.body.nomeCompleto");
+    expect(res1.body).toHaveProperty("errors.body.nome");
+    expect(res1.body).toHaveProperty("errors.body.sobrenome");
   });
 });
