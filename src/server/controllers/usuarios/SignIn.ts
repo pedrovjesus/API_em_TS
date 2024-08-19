@@ -5,6 +5,7 @@ import { StatusCodes } from "http-status-codes";
 import { IUsuario } from "../../database/models";
 import { UsariosProvider } from "../../database/providers/usuarios";
 import { PasswordCrypto } from "../../shared/services/PasswordCrypto";
+import { JWTService } from "../../shared/services";
 
 interface IBodyProps extends Omit<IUsuario, "id" | "nome"> {}
 
@@ -32,7 +33,10 @@ export const signIn = async (
     });
   }
 
-  const passwordMatch = await PasswordCrypto.verifyPassword(senha, result.senha)
+  const passwordMatch = await PasswordCrypto.verifyPassword(
+    senha,
+    result.senha
+  );
 
   if (!passwordMatch) {
     return res.status(StatusCodes.UNAUTHORIZED).json({
@@ -41,7 +45,15 @@ export const signIn = async (
       },
     });
   } else {
-    return res.status(StatusCodes.OK).json( {accessToken: 'teste.teste.teste.'})
-  }
+    const accessToken = JWTService.sign({ uid: result.id });
 
+    if (accessToken === "JWT_SECRET_NOT_FOUND") {
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        errors: {
+          default: "Erro ao gerar acesso",
+        },
+      });
+    }
+    return res.status(StatusCodes.OK).json({ accessToken });
+  }
 };
