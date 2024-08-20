@@ -1,24 +1,49 @@
 import { StatusCodes } from "http-status-codes";
+
 import { testServer } from "../jest.setup";
 
-describe("Cidade - get by id", () => {
-  it("Buscar registro por id", async () => {
-    const resposta = await testServer
+describe("Cidades - GetById", () => {
+  let accessToken = "";
+  beforeAll(async () => {
+    const email = "getbyid-cidades@gmail.com";
+    await testServer
+      .post("/cadastrar")
+      .send({ email, senha: "123456", nome: "Teste" });
+    const signInRes = await testServer
+      .post("/entrar")
+      .send({ email, senha: "123456" });
+
+    accessToken = signInRes.body.accessToken;
+  });
+
+  it("Tenta consultar sem usar token de autenticação", async () => {
+    const res1 = await testServer.get("/cidades/1").send();
+    expect(res1.statusCode).toEqual(StatusCodes.UNAUTHORIZED);
+    expect(res1.body).toHaveProperty("errors.default");
+  });
+  it("Busca registro por id", async () => {
+    const res1 = await testServer
       .post("/cidades")
-      .send({ nome: "caxinha" });
+      .set({ Authorization: `Bearer ${accessToken}` })
+      .send({ nome: "Caxias do sul" });
 
-      expect(resposta.statusCode).toEqual(StatusCodes.CREATED)
+    expect(res1.statusCode).toEqual(StatusCodes.CREATED);
 
-    const resBuscada = await testServer.get(`/cidades/${resposta.body}`).send();
+    const resBuscada = await testServer
+      .get(`/cidades/${res1.body}`)
+      .set({ Authorization: `Bearer ${accessToken}` })
+      .send();
+
     expect(resBuscada.statusCode).toEqual(StatusCodes.OK);
     expect(resBuscada.body).toHaveProperty("nome");
-
-    expect(resposta.statusCode).toEqual(StatusCodes.CREATED);
   });
-  it("tenta buscar registro que nao existe", async () => {
-    const resposta = await testServer.get("/cidades/9999").send();
+  it("Tenta buscar registro que não existe", async () => {
+    const res1 = await testServer
+      .get("/cidades/99999")
+      .set({ Authorization: `Bearer ${accessToken}` })
+      .send();
 
-    expect(resposta.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
-    expect(resposta.body).toHaveProperty("errors.default");
+    expect(res1.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
+    expect(res1.body).toHaveProperty("errors.default");
   });
 });
