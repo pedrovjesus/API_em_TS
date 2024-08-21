@@ -17,8 +17,6 @@
     "knex:rollback-all": "knex --knexfile ./src/server/database/knex/Environment.ts migrate:rollback --all"
   },
   "dependencies": {
-    "@types/bcryptjs": "^2.4.6",
-    "@types/jsonwebtoken": "^9.0.6",
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
@@ -30,6 +28,8 @@
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.6",
     "@types/jest": "^29.5.12",
     "@types/pg": "^8.11.6",
     "@types/supertest": "^6.0.2",
